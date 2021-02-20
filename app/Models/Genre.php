@@ -2,11 +2,11 @@
 
 namespace App\Models;
 
-use App\Models\Traits\Uuid;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Models\Traits\Uuid;
 
-class Category extends Model
+class Genre extends Model
 {
     use SoftDeletes;
 
@@ -15,7 +15,7 @@ class Category extends Model
     protected $dates = ['deleted_at'];
 
     protected $fillable = [
-        'name', 'description', 'is_active'
+        'name', 'is_active'
     ];
 
     protected $casts = [
