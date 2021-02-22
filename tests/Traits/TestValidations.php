@@ -28,4 +28,11 @@ trait TestValidations
         $fields = array_keys($data);
         $this->assertInvalidationFields($response, $fields, $rules, $ruleParams);
     }
+
+    protected function assertInvalidationUpdateAction(array $data, string $rules, array $ruleParams = [])
+    {
+        $response = $this->json('PUT', $this->routeUpdate(), $data);
+        $fields = array_keys($data);
+        $this->assertInvalidationFields($response, $fields, $rules, $ruleParams);
+    }
 }
