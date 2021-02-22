@@ -87,4 +87,56 @@ class CategoryControllerTest extends TestCase
                    Lang::get('validation.required', ['attribute' => 'name'])
                ]);
     }
+
+    public function testStore()
+    {
+        $response = $this->json('POST', route('categories.store'), [
+            'name' => 'test'
+        ]);
+
+        $category = Category::find($response->json(('id')));
+
+        $response->assertStatus(201)->assertJson($category->toArray());
+        $this->assertTrue($response->json('is_active'));
+        $this->assertNull($response->json('description'));
+
+        $response = $this->json('POST', route('categories.store'), [
+            'name' => 'test',
+            'is_active' => false,
+            'description' => 'test'
+        ]);
+
+        $category = Category::find($response->json(('id')));
+
+        $response->assertStatus(201)->assertJsonFragment([
+            'is_active' => false, 'description' => 'test'
+        ]);
+    }
+
+    public function testUpdate()
+    {
+        $category = factory(Category::class)->create([
+            'name' => 'test3',
+            'is_active' => false,
+        ]);
+
+        $response = $this->json('PUT', route('categories.update', ['category' => $category->id]), [
+            'name' => 'test',
+            'is_active' => true,
+            'description' => 'test4'
+        ]);
+
+        $response->assertStatus(200)->assertJsonFragment([
+            'is_active' => true
+        ]);
+
+        $response = $this->json('PUT', route('categories.update', ['category' => $category->id]), [
+            'name' => 'test',
+            'description' => ''
+        ]);
+
+        $response->assertStatus(200)->assertJsonFragment([
+            'description' => null
+        ]);
+    }
 }
