@@ -9,12 +9,14 @@ use Illuminate\Foundation\Testing\TestResponse;
 use Illuminate\Support\Facades\Lang;
 use Tests\TestCase;
 use App\Models\Category;
+use Tests\Traits\TestSaves;
 use Tests\Traits\TestValidations;
 
 class CategoryControllerTest extends TestCase
 {
     use DatabaseMigrations;
     use TestValidations;
+    use TestSaves;
 
     private $category;
 
@@ -57,27 +59,8 @@ class CategoryControllerTest extends TestCase
 
     public function testStore()
     {
-        $response = $this->json('POST', route('categories.store'), [
-            'name' => 'test'
-        ]);
-
-        $category = Category::find($response->json(('id')));
-
-        $response->assertStatus(201)->assertJson($category->toArray());
-        $this->assertTrue($response->json('is_active'));
-        $this->assertNull($response->json('description'));
-
-        $response = $this->json('POST', route('categories.store'), [
-            'name' => 'test',
-            'is_active' => false,
-            'description' => 'test'
-        ]);
-
-        $category = Category::find($response->json(('id')));
-
-        $response->assertStatus(201)->assertJsonFragment([
-            'is_active' => false, 'description' => 'test'
-        ]);
+        $data = ['name' => 'test'];
+        $this->assertStore($data, $data + ['description' => null]);
     }
 
     public function testUpdate()
@@ -125,5 +108,10 @@ class CategoryControllerTest extends TestCase
     protected function routeUpdate()
     {
         return route('categories.update', ['category' => $this->category->id]);
+    }
+
+    protected function model()
+    {
+        return Category::class;
     }
 }
