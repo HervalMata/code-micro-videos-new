@@ -5,12 +5,14 @@ namespace Tests\Feature\Http\Controllers\Api;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Tests\TestCase;
 use App\Models\Genre;
+use Tests\Traits\TestSaves;
 use Tests\Traits\TestValidations;
 
 class GenreControllerTest extends TestCase
 {
     use DatabaseMigrations;
     use TestValidations;
+    use TestSaves;
 
     private $genre;
 
@@ -53,25 +55,8 @@ class GenreControllerTest extends TestCase
 
     public function testStore()
     {
-        $response = $this->json('POST', route('genres.store'), [
-            'name' => 'test'
-        ]);
-
-        $genre = Genre::find($response->json(('id')));
-
-        $response->assertStatus(201)->assertJson($genre->toArray());
-        $this->assertTrue($response->json('is_active'));
-
-        $response = $this->json('POST', route('genres.store'), [
-            'name' => 'test',
-            'is_active' => false
-        ]);
-
-        $genre = Genre::find($response->json(('id')));
-
-        $response->assertStatus(201)->assertJsonFragment([
-            'is_active' => false
-        ]);
+        $data = ['name' => 'test'];
+        $this->assertStore($data, $data);
     }
 
     public function testUpdate()
@@ -112,5 +97,10 @@ class GenreControllerTest extends TestCase
     protected function routeUpdate()
     {
         return route('genres.update', ['genre' => $this->genre->id]);
+    }
+
+    protected function model()
+    {
+        return Genre::class;
     }
 }
