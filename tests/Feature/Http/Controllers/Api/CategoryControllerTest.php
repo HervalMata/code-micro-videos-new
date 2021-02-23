@@ -23,7 +23,7 @@ class CategoryControllerTest extends TestCase
     protected function setUp() : void
     {
         parent::setUp();
-        $this->category = $category = factory(Category::class)->create();
+        $this->category = factory(Category::class)->create();
     }
 
     public function testIndex()
@@ -60,7 +60,13 @@ class CategoryControllerTest extends TestCase
     public function testStore()
     {
         $data = ['name' => 'test'];
-        $this->assertStore($data, $data + ['description' => null]);
+        $response = $this->assertStore($data, $data + ['description' => null, 'is_active' => true, 'deleted_at' => null]);
+        $response->assertJsonStructure(['created_at', 'updated_at']);
+
+        $data = [
+            'name' => 'test', 'is_active' => false, 'description' => 'test'
+        ];
+        $this->assertStore($data, $data + ['description' => 'test', 'is_active' => false]);
     }
 
     public function testUpdate()

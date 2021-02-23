@@ -19,7 +19,7 @@ class GenreControllerTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->genre = $genre = factory(Genre::class)->create();
+        $this->genre = factory(Genre::class)->create();
     }
 
     public function testIndex()
@@ -56,7 +56,13 @@ class GenreControllerTest extends TestCase
     public function testStore()
     {
         $data = ['name' => 'test'];
-        $this->assertStore($data, $data);
+        $response = $this->assertStore($data, $data + ['is_active' => true, 'deleted_at' => null]);
+        $response->assertJsonStructure(['created_at', 'updated_at']);
+
+        $data = [
+            'name' => 'test', 'is_active' => false
+        ];
+        $this->assertStore($data, $data + ['is_active' => false]);
     }
 
     public function testUpdate()
