@@ -3,10 +3,10 @@
 namespace Tests\Feature\Http\Controllers\Api;
 
 use App\Models\CastMember;
+use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Tests\TestCase;
 use Tests\Traits\TestSaves;
 use Tests\Traits\TestValidations;
-use Illuminate\Foundation\Testing\DatabaseMigrations;
 
 class CastMemberControllerTest extends TestCase
 {
@@ -62,10 +62,10 @@ class CastMemberControllerTest extends TestCase
     {
         $data = [
             ['name' => 'test', 'type' => CastMember::TYPE_ACTOR],
-            ['name' => 'test1', 'type' => CastMember::TYPE_DIRECTOR]
+            ['name' => 'test', 'type' => CastMember::TYPE_DIRECTOR]
         ];
 
-        foreach ($data as $value) {
+        foreach ($data as $key => $value) {
             $response = $this->assertStore($value, $value + ['deleted_at' => null]);
             $response->assertJsonStructure(['created_at', 'updated_at']);
         }
@@ -73,13 +73,13 @@ class CastMemberControllerTest extends TestCase
     }
 
     /**
-     * @throws Exception
+     * @throws \Exception
      */
     public function testUpdate()
     {
 
         $data = [
-            'name' => 'test2', 'type' => CastMember::TYPE_ACTOR
+            'name' => 'test', 'type' => CastMember::TYPE_ACTOR
         ];
 
         $response = $this->assertUpdate($data, $data + ['deleted_at' => null]);
