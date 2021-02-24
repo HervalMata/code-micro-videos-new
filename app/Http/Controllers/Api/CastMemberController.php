@@ -1,23 +1,23 @@
 <?php
 
-namespace Tests\Stubs\Controllers;
+namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Api\BasicCrudController;
-use Tests\Stubs\Models\CategoryStub;
+use App\Models\CastMember;
+use Illuminate\Http\Request;
 
-class CategoryControllerStub extends BasicCrudController
+class CastMemberController extends BasicCrudController
 {
-
     protected function model()
     {
-        return CategoryStub::class;
+        return CastMember::class;
     }
 
     protected function rulesStore()
     {
         return [
             'name' => 'required|max:255',
-            'description' => 'nullable'
+            'type' => 'required|in:1,2' . implode('.', [CastMember::TYPE_ACTOR, CastMember::TYPE_DIRECTOR])
         ];
     }
 

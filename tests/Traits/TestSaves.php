@@ -19,7 +19,7 @@ trait TestSaves
         $response = $this->json('POST', $this->routeStore(), $sendData);
         $status = $response->status();
         if ($status !== 201) {
-            throw new Exception("Response status must be 201, given {$status}: {$response->content()}");
+            throw new \Exception("Response status must be 201, given {$status}: {$response->content()}");
         }
 
         $this->assertInDatabase($response, $testDatabase);
@@ -33,7 +33,7 @@ trait TestSaves
         $response = $this->json('PUT', $this->routeUpdate(), $sendData);
         $status = $response->status();
         if ($status !== 200) {
-            throw new Exception("Response status must be 200, given {$status}: {$response->content()}");
+            throw new \Exception("Response status must be 200, given {$status}: {$response->content()}");
         }
 
         $this->assertInDatabase($response, $testDatabase);
