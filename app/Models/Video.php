@@ -12,6 +12,8 @@ class Video extends Model
 
     use Uuid;
 
+    const RATING_LIST = ['L', '10', '12', '14', '16', '18'];
+
     public $incrementing = false;
     protected $dates = ['deleted_at'];
     protected $fillable = [
