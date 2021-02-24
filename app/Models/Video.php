@@ -1,0 +1,27 @@
+<?php
+
+namespace App\Models;
+
+use App\Models\Traits\uuid;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
+
+class Video extends Model
+{
+    use SoftDeletes;
+
+    use Uuid;
+
+    public $incrementing = false;
+    protected $dates = ['deleted_at'];
+    protected $fillable = [
+        'title', 'description', 'year_launched',
+        'opened', 'rating', 'duration'
+    ];
+    protected $casts = [
+        'id' => 'string',
+        'year_launched' => 'boolean',
+        'opened' => 'boolean',
+        'duration' => 'integer'
+    ];
+}
