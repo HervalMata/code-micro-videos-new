@@ -2,11 +2,7 @@
 
 namespace Tests\Feature\Http\Controllers\Api;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Foundation\Testing\TestResponse;
-use Illuminate\Support\Facades\Lang;
 use Tests\TestCase;
 use App\Models\Category;
 use Tests\Traits\TestSaves;
@@ -99,7 +95,7 @@ class CategoryControllerTest extends TestCase
         $data['description'] = null;
 
         $this->assertUpdate($data, array_merge($data, ['description' => null]));
-    
+
     }
 
     public function testRemove()

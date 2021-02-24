@@ -84,4 +84,47 @@ class BasicCrudControllerStub extends TestCase
         $this->expectException(ModelNotFoundException::class);
         $reflectionMethod->invokeArgs($this->controller, [0]);
     }
+
+    public function testShow()
+    {
+        $category = CategoryStub::create([
+            'name' => 'testName', 'description' => 'testdescription'
+        ]);
+
+        $result = $this->controller->show($category->id);
+
+        $this->assertEquals($category->toArray(), $result->toArray());
+    }
+
+    public function testUpdate()
+    {
+        $category = CategoryStub::create([
+            'name' => 'testName', 'description' => 'testdescription'
+        ]);
+
+        $request = $this->mock(Request::class);
+        $request->shouldReceive('all')->once()->andReturn([
+            'name' => 'test',
+            'description' => 'test_desc'
+        ]);
+
+        $obj = $this->controller->update($request, $category->id);
+
+        $this->assertEquals(
+            CategoryStub::find(1)->toArray(),
+            $obj->toArray()
+        );
+    }
+
+    public function testDestroy()
+    {
+        $category = CategoryStub::create([
+            'name' => 'testName', 'description' => 'testdescription'
+        ]);
+
+        $response = $this->controller->destroy($category->id);
+
+        $this->createTestResponse($response)->assertStatus(204);
+        $this->assertCount(0, CategoryStub::all());
+    }
 }
