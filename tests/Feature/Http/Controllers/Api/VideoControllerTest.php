@@ -15,6 +15,20 @@ class VideoControllerTest extends TestCase
     use TestSaves;
 
     private $video;
+    private $sendData;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->sendData = [
+            'title' => 'some title',
+            'description' => 'short description',
+            'year_launched' => 1983,
+            'rating' => Video::RATING_LIST[0],
+            'duration' => 30,
+        ];
+        $this->video = factory(Video::class)->create();
+    }
 
     public function testIndex()
     {
@@ -88,34 +102,33 @@ class VideoControllerTest extends TestCase
         $this->assertNull(Video::find($video->id));
     }
 
-    /*public function testInvalidationData()
-    {
-        $data = ['name' => ''];
-        $this->assertInvalidationStoreAction($data, 'required');
-        $this->assertInvalidationUpdateAction($data, 'required');
-
-        $data = ['name' => str_repeat('a', 256)];
-        $this->assertInvalidationStoreAction($data,'max.string', ['max' => 255]);
-        $this->assertInvalidationUpdateAction($data, 'max.string', ['max' => 255]);
-
-        $data = ['is_active' => 'a'];
-        $this->assertInvalidationStoreAction($data, 'boolean');
-        $this->assertInvalidationUpdateAction($data, 'boolean');
-    }
-
     public function testStore()
     {
-        $data = ['name' => 'test'];
-        $response = $this->assertStore($data, $data + ['description' => null, 'is_active' => true, 'deleted_at' => null]);
-        $response->assertJsonStructure(['created_at', 'updated_at']);
-
         $data = [
-            'name' => 'test', 'is_active' => false, 'description' => 'test'
+            [
+                'send_data' => $this->sendData,
+                'test_data' => $this->sendData + ['opened' => false],
+            ],
+            [
+                'send_data' => $this->sendData + ['opened' => true],
+                'test_data' => $this->sendData + ['opened' => true],
+            ],
+            [
+                'send_data' => $this->sendData + ['rating' => Video::RATING_LIST[1]],
+                'test_data' => $this->sendData + ['rating' => Video::RATING_LIST[1]],
+            ]
         ];
-        $this->assertStore($data, $data + ['description' => 'test', 'is_active' => false]);
+
+        foreach ($data as $key => $value) {
+            $response = $this->assertStore($value['send_data'], $value['test_data'] + ['deleted_at' => null]);
+            $response->assertJsonStructure(['created_at', 'updated_at']);
+
+            $response = $this->assertUpdate($value['send_data'], $value['test_data'] + ['deleted_at' => null]);
+            $response->assertJsonStructure(['created_at', 'updated_at']);
+        }
     }
 
-    public function testUpdate()
+    /*public function testUpdate()
     {
         $this->video = factory(Video::class)->create([
             'name' => 'test3',
@@ -148,11 +161,7 @@ class VideoControllerTest extends TestCase
 
     }*/
 
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->video = factory(Video::class)->create();
-    }
+
 
     protected function routeStore()
     {
