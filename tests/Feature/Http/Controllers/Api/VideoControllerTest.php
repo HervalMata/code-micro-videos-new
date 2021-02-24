@@ -128,41 +128,6 @@ class VideoControllerTest extends TestCase
         }
     }
 
-    /*public function testUpdate()
-    {
-        $this->video = factory(Video::class)->create([
-            'name' => 'test3',
-            'is_active' => false,
-        ]);
-
-        $data = [
-            'name' => 'test',
-            'is_active' => true,
-            'description' => 'test4'
-        ];
-
-        $response = $this->assertUpdate($data, $data + ['deleted_at' => null]);
-        $response->assertJsonStructure(['created_at', 'updated_at']);
-
-        $data = [
-            'name' => 'test',
-            'description' => ''
-        ];
-
-        $this->assertUpdate($data, array_merge($data, ['description' => null]));
-
-        $data['description'] = 'test';
-
-        $this->assertUpdate($data, array_merge($data, ['description' => 'test']));
-
-        $data['description'] = null;
-
-        $this->assertUpdate($data, array_merge($data, ['description' => null]));
-
-    }*/
-
-
-
     protected function routeStore()
     {
         return route('videos.store');
