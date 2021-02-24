@@ -2,9 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Controllers\Api\BasicCrudController;
 use App\Models\CastMember;
-use Illuminate\Http\Request;
 
 class CastMemberController extends BasicCrudController
 {
@@ -17,7 +15,7 @@ class CastMemberController extends BasicCrudController
     {
         return [
             'name' => 'required|max:255',
-            'type' => 'required|in:1,2' . implode('.', [CastMember::TYPE_ACTOR, CastMember::TYPE_DIRECTOR])
+            'type' => 'required|in:' . implode(',', [CastMember::TYPE_ACTOR, CastMember::TYPE_DIRECTOR])
         ];
     }
 
