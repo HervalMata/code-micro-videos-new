@@ -2,8 +2,13 @@
 
 namespace Tests\Feature\Http\Controllers\Api;
 
+use App\Http\Controllers\Api\VideoController;
+use App\Models\Category;
+use App\Models\Genre;
 use App\Models\Video;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
+use Illuminate\Http\Request;
+use Tests\Exceptions\TestException;
 use Tests\TestCase;
 use Tests\Traits\TestSaves;
 use Tests\Traits\TestValidations;
@@ -25,7 +30,7 @@ class VideoControllerTest extends TestCase
             'description' => 'short description',
             'year_launched' => 1983,
             'rating' => Video::RATING_LIST[0],
-            'duration' => 30,
+            'duration' => 30
         ];
         $this->video = factory(Video::class)->create();
     }
@@ -50,7 +55,8 @@ class VideoControllerTest extends TestCase
     {
         $data = [
             'title' => '', 'description' => '', 'year_launched' => '',
-            'rating' => '', 'duration' => '',
+            'rating' => '', 'duration' => '', 'categories_id' => '',
+            'genres_id' => ''
         ];
 
         $this->assertInvalidationStoreAction($data, 'required');
@@ -92,6 +98,28 @@ class VideoControllerTest extends TestCase
         $this->assertInvalidationUpdateAction($data, 'in');
     }
 
+    public function testInvalidationCategoriesId()
+    {
+        $data = ['categories_id' => 'a'];
+        $this->assertInvalidationStoreAction($data, 'array');
+        $this->assertInvalidationUpdateAction($data, 'array');
+
+        $data = ['categories_id' => [999]];
+        $this->assertInvalidationStoreAction($data, 'exists');
+        $this->assertInvalidationUpdateAction($data, 'exists');
+    }
+
+    public function testInvalidationGenresId()
+    {
+        $data = ['genres_id' => 'a'];
+        $this->assertInvalidationStoreAction($data, 'array');
+        $this->assertInvalidationUpdateAction($data, 'array');
+
+        $data = ['genres_id' => [999]];
+        $this->assertInvalidationStoreAction($data, 'exists');
+        $this->assertInvalidationUpdateAction($data, 'exists');
+    }
+
     public function testRemove()
     {
         $video = factory(Video::class)->create();
@@ -104,17 +132,25 @@ class VideoControllerTest extends TestCase
 
     public function testStore()
     {
+        $categories = factory(Category::class, 3)->create();
+        $genres = factory(Genre::class, 2)->create();
+
+        $extra = [
+            'categories_id' => $categories->pluck('id')->toArray(),
+            'genres_id' => $genres->pluck('id')->toArray()
+        ];
+
         $data = [
             [
-                'send_data' => $this->sendData,
-                'test_data' => $this->sendData + ['opened' => false],
+                'send_data' => $this->sendData + $extra,
+                'test_data' => $this->sendData
             ],
             [
-                'send_data' => $this->sendData + ['opened' => true],
+                'send_data' => $this->sendData + ['opened' => true] + $extra,
                 'test_data' => $this->sendData + ['opened' => true],
             ],
             [
-                'send_data' => $this->sendData + ['rating' => Video::RATING_LIST[1]],
+                'send_data' => $this->sendData + ['rating' => Video::RATING_LIST[1]] + $extra,
                 'test_data' => $this->sendData + ['rating' => Video::RATING_LIST[1]],
             ]
         ];
@@ -125,6 +161,21 @@ class VideoControllerTest extends TestCase
 
             $response = $this->assertUpdate($value['send_data'], $value['test_data'] + ['deleted_at' => null]);
             $response->assertJsonStructure(['created_at', 'updated_at']);
+        }
+    }
+
+    public function testRollbackStore()
+    {
+        $controller = \Mockery::mock(VideoController::class)
+            ->makePartial()->shouldAllowMockingProtectedMethods();
+        $controller->shouldReceive('validate')->withAnyArgs()->andReturn($this->sendData);
+        $controller->shouldReceive('rulesStore')->withAnyArgs()->andReturn([]);
+        $controller->shouldReceive('handleRelations')->once()->andThrow(new TestException());
+        $request = \Mockery::mock(Request::class);
+        try {
+            $controller->store($request);
+        } catch (TestException $e) {
+            $this->assertCount(1, Video::all());
         }
     }
 
