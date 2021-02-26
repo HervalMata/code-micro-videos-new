@@ -20,7 +20,7 @@ class Video extends Model
     protected $dates = ['deleted_at'];
     protected $fillable = [
         'title', 'description', 'year_launched',
-        'opened', 'rating', 'duration'
+        'opened', 'rating', 'duration', 'video_file'
     ];
     protected $casts = [
         'id' => 'string',
@@ -29,7 +29,7 @@ class Video extends Model
         'duration' => 'integer'
     ];
 
-    public static $fileFields = ['video_file', 'banner', 'trailer'];
+    public static $fileFields = ['video_file'];
 
     public function categories()
     {
@@ -65,12 +65,17 @@ class Video extends Model
 
     public function update(array $attributes = [], array $options = [])
     {
+        $files = self::extractFiles($attributes);
+        $oldFileName = $this->video_file;
         try {
             \DB::beginTransaction();
             $saved = parent::update($attributes, $options);
             static::handleRelations($this, $attributes);
             if ($saved) {
-
+                $this->uploadFiles($files);
+                if ($oldFileName) {
+                    $this->deleteFile($oldFileName);
+                }
             }
             \DB::commit();
             return $saved;

@@ -13,10 +13,11 @@ use Illuminate\Http\UploadedFile;
 
 trait UploadFiles
 {
+    //public $oldFiles = [];
     protected abstract function uploadDir();
 
     /**
-     * @param UploadedFile $files
+     * @param UploadedFile[] $files
      */
     public function uploadFiles(array $files)
     {
@@ -26,7 +27,7 @@ trait UploadFiles
     }
 
     /**
-     * @param UploadedFile $files
+     * @param UploadedFile $file
      */
     public function uploadFile(UploadedFile $file)
     {

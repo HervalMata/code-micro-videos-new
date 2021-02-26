@@ -39,7 +39,7 @@ class VideoTest extends TestCase
             [
                 'created_at', 'deleted_at', 'id', 'description',
                 'rating', 'title', 'updated_at', 'year_launched',
-                'opened', 'duration'
+                'opened', 'duration', 'video_file'
             ], $keys
         );
     }
