@@ -4,7 +4,6 @@
 
  namespace Tests\Traits;
 
- use Exception;
 use Illuminate\Foundation\Testing\TestResponse;
 
 trait TestSaves
