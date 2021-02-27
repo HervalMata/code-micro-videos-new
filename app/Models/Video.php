@@ -4,9 +4,9 @@ namespace App\Models;
 
 use App\Models\Traits\UploadFiles;
 use App\Models\Traits\Uuid;
+use Exception;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Exception;
 
 class Video extends Model
 {
@@ -15,6 +15,11 @@ class Video extends Model
     use Uuid;
 
     const RATING_LIST = ['L', '10', '12', '14', '16', '18'];
+
+    const THUMB_FILE_MAX_FILE = 1024 * 5;
+    const BANNER_FILE_MAX_FILE = 1024 * 10;
+    const TRAILER_FILE_MAX_FILE = 1024 * 1024 * 1;
+    const VIDEO_FILE_MAX_FILE = 1024 * 1024 * 50;
 
     public $incrementing = false;
     protected $dates = ['deleted_at'];
@@ -100,5 +105,25 @@ class Video extends Model
     protected function uploadDir()
     {
         return $this->id;
+    }
+
+    public function getThumbFileUrlAttribute()
+    {
+        return $this->thumb_file ? $this->getFileUrl($this->tumb_file) : null;
+    }
+
+    public function getBannerFileUrlAttribute()
+    {
+        return $this->banner_file ? $this->getFileUrl($this->banner_file) : null;
+    }
+
+    public function getTraillerFileUrlAttribute()
+    {
+        return $this->trailler_file ? $this->getFileUrl($this->trailler_file) : null;
+    }
+
+    public function getVideoFileUrlAttribute()
+    {
+        return $this->video_file ? $this->getFileUrl($this->video_file) : null;
     }
 }

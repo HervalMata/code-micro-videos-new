@@ -2,10 +2,10 @@
 
 namespace Test\Unit\Models;
 
-use Tests\TestCase;
-use \App\Models\Genre;
+use App\Models\Genre;
 use App\Models\Traits\uuid;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Tests\TestCase;
 
 class GenreTest extends TestCase
 {

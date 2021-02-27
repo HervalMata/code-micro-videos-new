@@ -4,9 +4,9 @@ namespace Tests\Stubs\Controllers;
 
 use App\Http\Controllers\Api\BasicCrudController;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Http\Request;
 use Tests\Stubs\Models\CategoryStub;
 use Tests\TestCase;
-use Illuminate\Http\Request;
 
 class BasicCrudControllerStub extends TestCase
 {

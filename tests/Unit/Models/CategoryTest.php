@@ -2,10 +2,10 @@
 
 namespace Test\Unit\Models;
 
-use Tests\TestCase;
-use \App\Models\Category;
+use App\Models\Category;
 use App\Models\Traits\uuid;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Tests\TestCase;
 
 class CategoryTest extends TestCase
 {

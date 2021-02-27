@@ -11,7 +11,7 @@ class VideoCrudTest extends BaseVideoTestCase
 {
     private $fileFieldData;
 
-    protected function setUp()
+    protected function setUp() : void
     {
         parent::setUp();
         foreach (Video::$fileFields as $field) {

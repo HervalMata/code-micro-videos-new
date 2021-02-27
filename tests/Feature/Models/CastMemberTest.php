@@ -2,8 +2,8 @@
 
 namespace Tests\Feature\Models;
 
-use Illuminate\Foundation\Testing\DatabaseMigrations;
 use App\Models\CastMember;
+use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Tests\TestCase;
 
 class CastMemberTest extends TestCase

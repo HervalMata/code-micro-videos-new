@@ -4,11 +4,11 @@ namespace Tests\Feature\Http\Controllers\Api;
 
 use App\Http\Controllers\Api\GenreController;
 use App\Models\Category;
+use App\Models\Genre;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Http\Request;
 use Tests\Exceptions\TestException;
 use Tests\TestCase;
-use App\Models\Genre;
 use Tests\Traits\TestSaves;
 use Tests\Traits\TestValidations;
 

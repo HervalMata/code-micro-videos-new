@@ -4,18 +4,42 @@ namespace Tests\Feature\Http\Controllers\Api\VideoController;
 
 use App\Models\Category;
 use App\Models\Genre;
+use App\Models\Video;
+use Illuminate\Foundation\Testing\TestResponse;
 use Illuminate\Http\UploadedFile;
-use Tests\TestCase;
+use Illuminate\Support\Arr;
 use Tests\Traits\TestUploads;
 
-class VideoControllerUploadsTest extends TestCase
+class VideoControllerUploadsTest extends BaseVideoControllerTestCase
 {
     use TestUploads;
+
+    public function testInvalidationThumbField()
+    {
+        $this->assertInvalidationFile(
+            'thumb_file', 'jpg', Video::THUMB_FILE_MAX_FILE, "image"
+        );
+    }
+
+    public function testInvalidationBannerField()
+    {
+        $this->assertInvalidationFile(
+            'banner_file', 'jpg', Video::BANNER_FILE_MAX_FILE, "image"
+        );
+    }
+
+    public function testInvalidationTraillerField()
+    {
+        $this->assertInvalidationFile(
+            'trailler_file', 'mp4', Video::TRAILER_FILE_MAX_FILE,
+            "mimetypes", ['values' => 'video/mp4']
+        );
+    }
 
     public function testInvalidationVideoField()
     {
         $this->assertInvalidationFile(
-            'video_file', 'mp4', 12,
+            'video_file', 'mp4', Video::VIDEO_FILE_MAX_FILE,
             "mimetypes", ['values' => 'video/mp4']
         );
     }
@@ -34,9 +58,10 @@ class VideoControllerUploadsTest extends TestCase
         ] + $files);
         $response->assertStatus(201);
         $id = $response->json('id');
-        foreach ($files as $file) {
+        /*foreach ($files as $file) {
             \Storage::assertExists("$id/{$file->hashName()}");
-        }
+        }*/
+        $this->assertFilesOnPersist($response, $files);
     }
 
     public function testUpdateWithFiles()
@@ -52,16 +77,43 @@ class VideoControllerUploadsTest extends TestCase
                 'genres_id' => $genres->pluck('id')->toArray()
             ] + $files);
         $response->assertStatus(200);
+
+        $this->assertFilesOnPersist($response, $files);
+
+        $newFiles = [
+            'thumb_file' => UploadedFile::fake()->create('thumb_file.jpg'),
+            'video_file' => UploadedFile::fake()->create('video_file.mp4'),
+        ];
+
+        $response = $this->json('PUT', $this->routeUpdate(), $this->sendData + [
+                'categories_id' => $categories->pluck('id')->toArray(),
+                'genres_id' => $genres->pluck('id')->toArray()
+            ] + $newFiles);
+        $response->assertStatus(200);
+        $this->assertFilesOnPersist($response, Arr::except($files, ['thumb_file', 'video_file']) + $newFiles);
         $id = $response->json('id');
-        foreach ($files as $file) {
-            \Storage::assertExists("$id/{$file->hashName()}");
-        }
+        $video = Video::find($id);
+        \Storage::assertMissing("{$video->relativeFilePath($files['thumb_file']->hashName())}");
+        \Storage::assertMissing("{$video->relativeFilePath($files['video_file']->hashName())}");
     }
 
     protected function getFiles()
     {
         return [
-            'video_file' => UploadedFile::fake()->create("video_file.mp4")
+            'video_file' => UploadedFile::fake()->create("video_file.mp4"),
+            'trailler_file' => UploadedFile::fake()->create("trailler_file.mp4"),
+            'thumb_file' => UploadedFile::fake()->create("thumb_file.jpg"),
+            'banner_file' => UploadedFile::fake()->create("banner_file.jpg"),
         ];
+    }
+
+    protected function assertFilesOnPersist(TestResponse $response, $files)
+    {
+        $id = $response->json('id');
+        foreach ($files as $file) {
+            \Storage::assertExists("$id/{$file->hashName()}");
+        }
+        $model = Video::find($id);
+        $this->assertFilesExistsInStorage($model, $files);
     }
 }

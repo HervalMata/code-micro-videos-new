@@ -2,9 +2,9 @@
 
 namespace Tests\Feature\Http\Controllers\Api;
 
+use App\Models\Category;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Tests\TestCase;
-use App\Models\Category;
 use Tests\Traits\TestSaves;
 use Tests\Traits\TestValidations;
 

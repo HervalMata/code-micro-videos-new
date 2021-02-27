@@ -2,10 +2,10 @@
 
 namespace Tests\Unit\Models;
 
-use PHPUnit\Framework\TestCase;
+use App\Models\CastMember;
 use App\Models\Traits\uuid;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use App\Models\CastMember;
+use PHPUnit\Framework\TestCase;
 
 class CastMemberTest extends TestCase
 {

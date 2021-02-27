@@ -85,4 +85,14 @@ trait UploadFiles
     {
         $this->deletefiles($this->oldFiles);
     }
+
+    public function relativeFilePath($value)
+    {
+        return "{$this->uploadDir()}/{$value}";
+    }
+
+    protected function getFileUrl($fileName)
+    {
+        return \Storage::url($this->relativeFilePath($fileName));
+    }
 }

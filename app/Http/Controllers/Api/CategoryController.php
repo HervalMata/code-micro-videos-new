@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Api;
 
 use App\Models\Category;
-use App\Http\Controllers\Api\BasicCrudController;
 
 class CategoryController extends BasicCrudController
 {
