@@ -66,7 +66,7 @@ class VideoControllerUploadsTest extends BaseVideoControllerTestCase
 
     public function testUpdateWithFiles()
     {
-        \Storage::fake();
+        \Storage::fake('public');
         $files = $this->getFiles();
         $categories = factory(Category::class, 3)->create();
         $genres = factory(Genre::class, 2)->create();

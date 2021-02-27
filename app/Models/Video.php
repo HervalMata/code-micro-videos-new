@@ -25,7 +25,8 @@ class Video extends Model
     protected $dates = ['deleted_at'];
     protected $fillable = [
         'title', 'description', 'year_launched',
-        'opened', 'rating', 'duration', 'video_file', 'thumb_file'
+        'opened', 'rating', 'duration', 'video_file', 'thumb_file',
+        'trailler_file', 'banner_file'
     ];
     protected $casts = [
         'id' => 'string',
@@ -34,7 +35,7 @@ class Video extends Model
         'duration' => 'integer'
     ];
 
-    public static $fileFields = ['video_file', 'thumb_file'];
+    public static $fileFields = ['video_file', 'thumb_file', 'trailler_file', 'banner_file'];
 
     public function categories()
     {
