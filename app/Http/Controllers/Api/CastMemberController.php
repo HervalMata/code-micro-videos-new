@@ -23,4 +23,14 @@ class CastMemberController extends BasicCrudController
     {
         return $this->rulesStore();
     }
+
+    protected function resourceCollection()
+    {
+        return $this->resource();
+    }
+
+    protected function resource()
+    {
+        return CategoryResource::class;
+    }
 }
