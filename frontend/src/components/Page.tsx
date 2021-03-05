@@ -1,5 +1,6 @@
 import * as React from 'react';
 import {Container, makeStyles, Typography} from "@material-ui/core";
+import {Box} from "@material-ui/core/index";
 
 const useStyles = makeStyles({
     title: {
@@ -21,7 +22,9 @@ export const Page: React.FC<PageProps> = (props) => {
                 variant={"h5"}>
                 {props.title}
             </Typography>
-            {props.children}
+            <Box paddingTop={2}>
+                {props.children}
+            </Box>
         </Container>
     );
 };
