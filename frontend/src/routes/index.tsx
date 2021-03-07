@@ -28,13 +28,6 @@ const routes: Array<MyRouteProps> = [
         path: "/categories/create",
         component: CategoryList,
         exact: true,
-    },
-    {
-        name: "categories.edit",
-        label: "Editar Categorias",
-        path: "/categories/edit",
-        component: CategoryList,
-        exact: true,
     }
 ];
 
