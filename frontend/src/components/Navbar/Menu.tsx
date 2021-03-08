@@ -5,7 +5,12 @@ import { Menu as MenuIcon } from '@material-ui/icons'
 import routes, { MyRouteProps} from "../../routes";
 import {Link} from "react-router-dom";
 
-const listRoutes = ["dashboard", "categories.list"];
+const listRoutes = [
+    "dashboard",
+    "categories.list",
+    "cast-members.list",
+    "genres.list",
+];
 const menuRoutes = routes.filter((route) => listRoutes.includes(route.name));
 // @ts-ignore
 export const Menu = () => {
