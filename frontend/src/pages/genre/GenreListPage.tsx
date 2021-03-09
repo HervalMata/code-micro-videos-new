@@ -7,8 +7,9 @@ import Table from "./Table";
 
 export const GenreListPage = () => {
     return <Page title="Listagem de Generos">
-        <Box dir={"rtl"}>
+        <Box dir={"rtl"} paddingBottom={2}>
             <Fab title={"Adicionar Genero"}
+                 color={"secondary"}
                  size={'small'} component={Link}
                  to="/genres/create">
                 <AddIcon />

@@ -18,7 +18,8 @@ const useStyles = makeStyles((theme: Theme) => {
 export const Form = () => {
     const classes = useStyles();
     const buttonProps: ButtonProps = {
-        variant: "outlined", size: "medium", className: classes.submit,
+        variant: "contained", size: "medium",
+        className: classes.submit, color: "secondary",
     };
     const [catagories, setCategories] = useState<any[]>([]);
     const { register, getValues, handleSubmit, setValue, watch } = useForm({

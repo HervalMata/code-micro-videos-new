@@ -1,11 +1,10 @@
 // @ts-ignore
 import React, {useEffect, useState} from 'react';
 import MUIDataTable, {MUIDataTableColumn} from "mui-datatables";
-import {httpVideo} from "../../util/http";
 import format from "date-fns/format";
 import parseISO from "date-fns/parseISO";
-import {Chip} from "@material-ui/core";
 import httpGenre from "../../util/http/http-genre";
+import {BadgeNo, BadgeYes} from "../../components/Badge";
 
 const columnsDefinition: MUIDataTableColumn[] = [
     {
@@ -27,10 +26,9 @@ const columnsDefinition: MUIDataTableColumn[] = [
         options: {
             customBodyRender: (value, tableMeta, updateValue) => {
                 if (value === true) {
-                    return <Chip color="primary" label="Sim" />;
+                    return <BadgeYes />;
                 }
-                // @ts-ignore
-                return <Chip color="secundary" label="Não" />;
+                return <BadgeNo />;
             },
         },
     },

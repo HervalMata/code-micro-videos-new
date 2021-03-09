@@ -19,12 +19,12 @@ routes.forEach((route) => {
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         linkRouter: {
-            color: "#4db5ab",
+            color: theme.palette.secondary.main,
             "&:focus, &:active": {
-                color: "#4db5ab",
+                color: theme.palette.secondary.main,
             },
             "&:hover": {
-                color: "#055a52",
+                color: theme.palette.secondary.dark,
             },
         },
     })
@@ -71,7 +71,7 @@ export default function Breadcrumbs() {
 
     return (
         <Container>
-            <Box paddingBottom={2}>
+            <Box paddingTop={2} paddingBottom={1}>
                 <Route>
                     {
                         ({ location }: {location: Location}) => makeBreadcrumb(location)

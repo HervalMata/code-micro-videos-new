@@ -7,8 +7,9 @@ import Table from "./Table";
 
 export const CastMemberListPage = () => {
     return <Page title="Listagem de Membros do Elenco">
-        <Box dir={"rtl"}>
+        <Box dir={"rtl"} paddingBottom={2}>
             <Fab title={"Adicionar Membro do Elenco"}
+                 color={"secondary"}
                  size={'small'} component={Link}
                  to="/cast-members/create">
                 <AddIcon />

@@ -1,7 +1,6 @@
 import React from 'react';
-import {Button, ButtonProps, TextField} from "@material-ui/core";
+import {Button, ButtonProps, Checkbox, TextField} from "@material-ui/core";
 import {makeStyles, Theme} from "@material-ui/core/styles";
-import {CheckBox} from "@material-ui/icons";
 import {Box} from "@material-ui/core/index";
 import {useForm} from "react-hook-form";
 import httpCategory from "../../util/http/http-category";
@@ -17,7 +16,8 @@ const useStyles = makeStyles((theme: Theme) => {
 export const Form = () => {
     const classes = useStyles();
     const buttonProps: ButtonProps = {
-        variant: "outlined", size: "medium", className: classes.submit,
+        variant: "contained", size: "medium",
+        className: classes.submit, color: "secondary",
     };
     const { register, getValues, handleSubmit } = useForm({
         defaultValues: {
@@ -33,8 +33,9 @@ export const Form = () => {
             <TextField inputRef={register} name="name" label="Nome" fullWidth variant="outlined" />
             <TextField inputRef={register} name="description" label="Descrição" margin="normal" fullWidth multiline rows={5} />
 
-            <CheckBox
+            <Checkbox
                 inputRef={register}
+                color={"primary"}
                 name="is_active"
                 defaultChecked={true}
             />
