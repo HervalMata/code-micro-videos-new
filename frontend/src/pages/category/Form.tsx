@@ -1,50 +1,128 @@
-import React from 'react';
-import {Button, ButtonProps, Checkbox, TextField} from "@material-ui/core";
-import {makeStyles, Theme} from "@material-ui/core/styles";
-import {Box} from "@material-ui/core/index";
+import React, {useEffect, useMemo, useState} from 'react';
+import {Checkbox, FormControlLabel, TextField} from "@material-ui/core";
 import {useForm} from "react-hook-form";
 import httpCategory from "../../util/http/http-category";
-
-const useStyles = makeStyles((theme: Theme) => {
-    return {
-        submit: {
-            margin: theme.spacing(1),
-        },
-    };
-});
+import {useYupValidationResolver} from "../../hooks/YupValidation";
+import * as yup from "yup";
+import { useHistory, useParams } from "react-router";
+import {useSnackbar} from "notistack";
+import {Category} from "../../util/dto";
+import SubmitActions from "../../components/SubmitActions";
+import DefaultForm from "../../components/DefaultForm";
 
 export const Form = () => {
-    const classes = useStyles();
-    const buttonProps: ButtonProps = {
-        variant: "contained", size: "medium",
-        className: classes.submit, color: "secondary",
-    };
-    const { register, getValues, handleSubmit } = useForm({
+    const validationSchema = useMemo(
+        () => yup.object({
+            name: yup.string().label("Nome").required().max(255),
+        }),
+        []
+    );
+    const resolver = useYupValidationResolver(validationSchema);
+    const { register, getValues, handleSubmit, errors, reset, watch, setValue, trigger } = useForm<Category>({
+        resolver,
         defaultValues: {
             is_active: true,
         },
     });
-    function onSubmit(formData, event) {
-        httpCategory.create(formData).then(console.log);
+
+    const snackbar = useSnackbar();
+    const history = useHistory();
+    const { id } = useParams<{ id: string }>();
+    const [category, setCategory] = useState<Category | null>(null);
+    const [loading, setLoading] = useState(false);
+
+    useEffect(() => {
+        register("is_active");
+    }, [register]);
+
+    useEffect(() => {
+        if (!id) {
+            return;
+        }
+        async function getCategory() {
+            setLoading(true);
+            try {
+                const {data} = await httpCategory.get<{ data: Category }>(id);
+                setCategory(data.data);
+                reset(data.data);
+            } catch (error) {
+                console.log(error);
+                snackbar.enqueueSnackbar("Não foi possível carregar as informações", {
+                    variant: "error",
+                });
+            } finally {
+                setLoading(false);
+            }
+        }
+        getCategory();
+    }, [id, reset, snackbar]);
+
+    async function onSubmit(formData: Category, event) {
+        setLoading(true);
+        try {
+            const http = !category
+                ? httpCategory.create(formData)
+                : httpCategory.update(id, formData);
+            const { data } = await http;
+            snackbar.enqueueSnackbar("Categoria salva com sucesso!", {
+                variant: "success",
+            });
+            setTimeout(() => {
+                if (!event) {
+                    return history.push("/categories");
+                }
+                if (id) {
+                    history.replace(`/categories/${data.data.id}/edit`);
+                } else {
+                    history.push(`/categories/${data.data.id}/edit`);
+                }
+            });
+        } catch(error) {
+            console.log(error);
+            snackbar.enqueueSnackbar("Falha ao salvar Categoria", {
+                variant: "error",
+            });
+        } finally {
+            setLoading(false);
+        }
     }
 
     return (
-        <form onSubmit={handleSubmit(onSubmit)}>
-            <TextField inputRef={register} name="name" label="Nome" fullWidth variant="outlined" />
-            <TextField inputRef={register} name="description" label="Descrição" margin="normal" fullWidth multiline rows={5} />
-
-            <Checkbox
-                inputRef={register}
-                color={"primary"}
-                name="is_active"
-                defaultChecked={true}
+        <DefaultForm onSubmit={handleSubmit(onSubmit)}>
+            <TextField
+                inputRef={register} name="name" label="Nome"
+                fullWidth variant="outlined" disabled={loading}
+                InputLabelProps={{ shrink: true }}
+                error={errors.name !== undefined}
+                helperText={errors.name && errors.name.message}
             />
-            Ativa?
-            <Box dir={"rtl"}>
-                <Button {...buttonProps} onClick={() => onSubmit(getValues(), null)}>Salvar</Button>
-                <Button {...buttonProps} type="submit">Salvar e continuar editando</Button>
-            </Box>
-        </form>
+            <TextField inputRef={register} name="description"
+                       label="Descrição" margin="normal" fullWidth
+                       multiline rows={5} InputLabelProps={{ shrink: true }}
+                       disabled={loading} variant="outlined"
+            />
+
+            <FormControlLabel
+                disabled={loading}
+                label={"Ativa?"} labelPlacement="end"
+                control={
+                    <Checkbox
+                        color={"primary"}
+                        name="is_active"
+                        onChange={() => setValue("is_active", !getValues().is_active)}
+                        checked={watch("is_active")}
+                    />
+                }
+                 />
+
+            <SubmitActions disableButtons={loading}
+                           handleSave={() => {
+                               return trigger().then((isValid) => {
+                                   isValid && onSubmit(getValues(), null);
+                               });
+                           }}
+            />
+        </DefaultForm>
     );
 };
 

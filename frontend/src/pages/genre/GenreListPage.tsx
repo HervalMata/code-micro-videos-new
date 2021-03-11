@@ -6,9 +6,9 @@ import AddIcon from "@material-ui/icons/Add";
 import Table from "./Table";
 
 export const GenreListPage = () => {
-    return <Page title="Listagem de Generos">
+    return <Page title="Listagem de Gêneros">
         <Box dir={"rtl"} paddingBottom={2}>
-            <Fab title={"Adicionar Genero"}
+            <Fab title={"Adicionar Gênero"}
                  color={"secondary"}
                  size={'small'} component={Link}
                  to="/genres/create">

@@ -1,24 +1,30 @@
 import React, {useEffect, useState} from 'react';
-import MUIDataTable, {MUIDataTableColumn} from "mui-datatables";
 import format from "date-fns/format";
 import parseISO from "date-fns/parseISO";
 import httpCategory from "../../util/http/http-category";
 import {BadgeNo, BadgeYes} from "../../components/Badge";
+import {Category, ListResponse} from "../../util/dto";
+import DefaultTable, {TableColumns} from "../../components/Table";
+import {useSnackbar} from "notistack";
 
-interface Category {
-    name: string;
-    is_active: boolean;
-    created_at: string;
-}
-
-const columnsDefinition: MUIDataTableColumn[] = [
+const columnsDefinition: TableColumns[] = [
+    {
+        name: "id",
+        label: "ID",
+        width: "30%",
+        options: {
+            sort: false,
+        }
+    },
     {
         name: "name",
         label: "nome",
+        width: "40%",
     },
     {
         name: "is_active",
         label: "Ativa?",
+        width: "4%",
         options: {
             customBodyRender: (value, tableMeta, updateValue) => {
                 if (value === true) {
@@ -31,28 +37,57 @@ const columnsDefinition: MUIDataTableColumn[] = [
     {
         name: "created_at",
         label: "Criado em",
+        width: "10%",
         options: {
             customBodyRender: (value, tableMeta, updateValue) => {
                 return <span>{format(parseISO(value), "dd/MM/yyyy")}</span>;
             },
         },
     },
+    {
+        name: "actions",
+        label: "Ações",
+        width: "16%",
+        options: {
+            sort: false,
+        }
+    }
 ];
 
 const Table = () => {
 
-    const [data, setData] = useState<Category[]>([]);
+    const [categories, setCategories] = useState<Category[]>([]);
+    const [loading, setLoading] = useState(false);
+    const snackbar = useSnackbar();
 
     useEffect(() => {
-        httpCategory.list<{ data: Category[] }>().then((response) => {
-            // @ts-ignore
-            setData(response.data);
-            console.log(response.data);
-        });
-    }, []);
+        let canLoad = true;
+        (async function getCategories() {
+            setLoading(true);
+            try {
+                const {data} = await httpCategory.list<ListResponse<Category>>();
+                if (canLoad) {
+                    // @ts-ignore
+                    setCategories(data);
+                    console.log(data);
+                }
+            } catch (error) {
+                console.log(error);
+                snackbar.enqueueSnackbar("Nao foi possível carregar as informações", {
+                    variant: "error",
+                });
+            } finally {
+                setLoading(false);
+            }
+        })();
+        return () => {
+            canLoad = false;
+        }
+    }, [snackbar]);
 
     return (
-        <MUIDataTable data={data} title={"Listagem de Categorias"}
+        <DefaultTable data={categories} loading={loading}
+                      title={"Listagem de Categorias"}
                       columns={columnsDefinition} />
 
     );
