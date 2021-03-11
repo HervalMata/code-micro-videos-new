@@ -63,7 +63,7 @@ class VideoSeeder extends Seeder
     public function getImageFile()
     {
         return new UploadedFile(
-            storage_path('faker/thumbs/Laravel Framework.png'),
+            storage_path('app/faker/thumbs/Laravel Framework.png'),
             'Laravel Framework.png'
         );
     }
@@ -71,7 +71,7 @@ class VideoSeeder extends Seeder
     public function getVideoFile()
     {
         return new UploadedFile(
-            storage_path('faker/videos/01-Como vai funcionar os uploads.mp4'),
+            storage_path('app/faker/videos/01-Como vai funcionar os uploads.mp4'),
             '01-Como vai funcionar os uploads.mp4'
         );
     }
