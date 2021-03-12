@@ -7,8 +7,8 @@ import DefaultTable, {TableColumns} from "../../components/Table";
 import {useSnackbar} from "notistack";
 
 const CastMemberTypeMap = {
-    0: "Diretor",
-    1: "Ator",
+    1: "Diretor",
+    2: "Ator",
 }
 
 const columnsDefinition: TableColumns[] = [
@@ -22,7 +22,7 @@ const columnsDefinition: TableColumns[] = [
     },
     {
         name: "name",
-        label: "nome",
+        label: "Nome",
         width: "24%",
     },
     {
@@ -70,7 +70,7 @@ const Table = () => {
                 const {data} = await httpCastMember.list<ListResponse<CastMember>>();
                 if (canLoad) {
                     // @ts-ignore
-                    setCastMembers(data);
+                    setCastMembers(data.data);
                     console.log(data);
                 }
             } catch (error) {

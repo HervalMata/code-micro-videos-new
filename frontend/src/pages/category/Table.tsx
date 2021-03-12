@@ -68,7 +68,7 @@ const Table = () => {
                 const {data} = await httpCategory.list<ListResponse<Category>>();
                 if (canLoad) {
                     // @ts-ignore
-                    setCategories(data);
+                    setCategories(data.data);
                     console.log(data);
                 }
             } catch (error) {
