@@ -47,7 +47,7 @@ export const Form = () => {
                 return;
             }
             setLoading(true);
-            const promisses = [httpCategory.list()];
+            const promisses = [httpCategory.list({ queryParams: { all: "" } })];
             if (!id) {
                 return;
             }

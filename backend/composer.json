@@ -13,7 +13,8 @@
         "fruitcake/laravel-cors": "^2.0",
         "laravel/framework": "~6.18",
         "laravel/tinker": "^1.0",
-        "laravel/ui": "^1.0"
+        "laravel/ui": "^1.0",
+        "tucker-eric/eloquentfilter": "^2.4"
     },
     "require-dev": {
         "barryvdh/laravel-ide-helper": "^2.6",
